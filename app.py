@@ -19,31 +19,38 @@ if "score_34" not in st.session_state:
 if st.session_state.step == 1:
     st.subheader("3.1 근속년수")
     ratio = st.number_input("6개월 미만 사원 비율 (%)", min_value=0.0, max_value=100.0, step=0.1)
-    if st.button("다음 →"):
-        if ratio < 5:
-            st.session_state.score_31 = 0.125
-        elif ratio < 10:
-            st.session_state.score_31 = 0.25
-        elif ratio <= 15:
-            st.session_state.score_31 = 0.375
-        else:
-            st.session_state.score_31 = 0.5
-        st.session_state.step = 2
+    col1, col2 = st.columns(2)
+    with col2:
+        if st.button("다음 →", key="next1"):
+            if ratio < 5:
+                st.session_state.score_31 = 0.125
+            elif ratio < 10:
+                st.session_state.score_31 = 0.25
+            elif ratio <= 15:
+                st.session_state.score_31 = 0.375
+            else:
+                st.session_state.score_31 = 0.5
+            st.session_state.step = 2
 
 # ---------------- STEP 2: 3.2 ----------------
 elif st.session_state.step == 2:
     st.subheader("3.2 휴식시간")
     rest = st.number_input("1시간당 평균 휴식시간 (분)", min_value=0.0, max_value=60.0, step=1.0)
-    if st.button("다음 →"):
-        if rest >= 15:
-            st.session_state.score_32 = 0.125
-        elif rest >= 10:
-            st.session_state.score_32 = 0.25
-        elif rest > 1:
-            st.session_state.score_32 = 0.375
-        else:
-            st.session_state.score_32 = 0.5
-        st.session_state.step = 3
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("← 이전", key="prev2"):
+            st.session_state.step = 1
+    with col2:
+        if st.button("다음 →", key="next2"):
+            if rest >= 15:
+                st.session_state.score_32 = 0.125
+            elif rest >= 10:
+                st.session_state.score_32 = 0.25
+            elif rest > 1:
+                st.session_state.score_32 = 0.375
+            else:
+                st.session_state.score_32 = 0.5
+            st.session_state.step = 3
 
 # ---------------- STEP 3: 3.3 ----------------
 elif st.session_state.step == 3:
@@ -58,31 +65,36 @@ elif st.session_state.step == 3:
     width = st.number_input("3.3.4 통로 폭 (cm)", min_value=0, step=1)
     g5 = st.radio("3.3.5 사각지대 상태", grade_opts, horizontal=True)
 
-    if st.button("다음 →"):
-        s1 = score_map[g1]
-        s2 = score_map[g2]
-        s5 = score_map[g5]
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("← 이전", key="prev3"):
+            st.session_state.step = 2
+    with col2:
+        if st.button("다음 →", key="next3"):
+            s1 = score_map[g1]
+            s2 = score_map[g2]
+            s5 = score_map[g5]
 
-        if sharp == 0 and others == 0:
-            s3 = 0.025
-        elif sharp == 0 and others <= 2:
-            s3 = 0.05
-        elif sharp <= 2 and others <= 4:
-            s3 = 0.075
-        else:
-            s3 = 0.1
+            if sharp == 0 and others == 0:
+                s3 = 0.025
+            elif sharp == 0 and others <= 2:
+                s3 = 0.05
+            elif sharp <= 2 and others <= 4:
+                s3 = 0.075
+            else:
+                s3 = 0.1
 
-        if width >= 250:
-            s4 = 0.025
-        elif width >= 100:
-            s4 = 0.05
-        elif width > 60:
-            s4 = 0.075
-        else:
-            s4 = 0.1
+            if width >= 250:
+                s4 = 0.025
+            elif width >= 100:
+                s4 = 0.05
+            elif width > 60:
+                s4 = 0.075
+            else:
+                s4 = 0.1
 
-        st.session_state.score_33 = round(s1 + s2 + s3 + s4 + s5, 3)
-        st.session_state.step = 4
+            st.session_state.score_33 = round(s1 + s2 + s3 + s4 + s5, 3)
+            st.session_state.step = 4
 
 # ---------------- STEP 4: 3.4 ----------------
 elif st.session_state.step == 4:
@@ -98,20 +110,25 @@ elif st.session_state.step == 4:
 
     x_count = 0
     for q in questions:
-        val = st.radio(q, ["o", "x"], index=0, horizontal=True)
+        val = st.radio(q, ["o", "x"], index=0, horizontal=True, key=q)
         if val != "o":
             x_count += 1
 
-    if st.button("최종 결과 보기"):
-        if x_count == 0:
-            st.session_state.score_34 = 0.125
-        elif x_count == 1:
-            st.session_state.score_34 = 0.25
-        elif x_count <= 4:
-            st.session_state.score_34 = 0.375
-        else:
-            st.session_state.score_34 = 0.5
-        st.session_state.step = 5
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("← 이전", key="prev4"):
+            st.session_state.step = 3
+    with col2:
+        if st.button("최종 결과 보기", key="next4"):
+            if x_count == 0:
+                st.session_state.score_34 = 0.125
+            elif x_count == 1:
+                st.session_state.score_34 = 0.25
+            elif x_count <= 4:
+                st.session_state.score_34 = 0.375
+            else:
+                st.session_state.score_34 = 0.5
+            st.session_state.step = 5
 
 # ---------------- STEP 5: 결과 ----------------
 elif st.session_state.step == 5:
